@@ -6,32 +6,8 @@ This repository contains all code, scripts, and instructions for reproducing the
 
 ## Repository Structure
 
-/CockroachDB-MongoDB-Evaluation
-│
-├── /dataset
-│ └── sales_data.csv # CSV dataset of 100,000 sales records from Kaggle
-│
-├── /scripts
-│ ├── /cockroachdb
-│ │ ├── performance.py # Batch insert, read, and aggregation performance scripts
-│ │ ├── scalability.py # Multi-node cluster scalability scripts
-│ │ └── consistency.py # ACID property testing (atomicity, consistency, isolation, durability)
-│ │
-│ ├── /mongodb
-│ │ ├── performance.py # Batch insert, read, and aggregation performance scripts
-│ │ ├── scalability.py # Sharded cluster scalability scripts
-│ │ └── consistency.py # ACID property testing
-│
-├── /cockroachdb_setup
-│ ├── node_startup.ps1 # PowerShell scripts to start single-node and multi-node clusters
-│ └── db_setup.sql # SQL scripts to create database and sales_data table
-│
-├── /mongodb_setup
-│ ├── mongod_shard_startup.ps1 # Commands to start MongoDB shards
-│ ├── mongos_config.ps1 # Commands to configure sharded cluster
-│ └── collection_setup.py # Python script to create collection and indexes
-│
-└── README.md # This file
+
+
 
 
 ---
