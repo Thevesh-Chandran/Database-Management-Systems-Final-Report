@@ -75,32 +75,43 @@ This repository contains all code, scripts, and instructions for reproducing the
 ### 1. Prepare Dataset
 Place `sales_data.csv` in the root of the repository or adjust paths in the scripts.
 
-Performance Testing Steps
-CockroachDB
+## Performance Testing Steps
 
-Start the database: Open PowerShell and start a single-node CockroachDB instance.
-
-cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-
-
-Connect to SQL shell:
-
+### CockroachDB
+1. **Start the database:** Open PowerShell and start a single-node CockroachDB instance.  
+   ```powershell
+   cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
+   
+2. **Connect to SQL shell:**
+ ```powershell
 cockroach sql --insecure --host=localhost:26257
+   ```
+3. **CCreate database and table: Run SQL commands to create nordstrom database and sales_data table**
+ ```powershell
+CREATE DATABASE nordstrom;
+USE nordstrom;
 
+CREATE TABLE sales_data (
+    region STRING,
+    country STRING,
+    item_type STRING,
+    sales_channel STRING,
+    order_priority STRING,
+    order_date DATE,
+    order_id INT PRIMARY KEY,
+    ship_date DATE,
+    units_sold INT,
+    unit_price DECIMAL,
+    unit_cost DECIMAL,
+    total_revenue DECIMAL,
+    total_cost DECIMAL,
+    total_profit DECIMAL
+);
 
-Create database and table: Run SQL commands to create nordstrom database and sales_data table.
+   ```
 
-Run performance script:
-
+4. **Run performance script**
+ ```powershell
 python performance_test_cockroachdb.py
 
-MongoDB
-
-Install Python driver:
-
-pip install pymongo
-
-
-Run performance script:
-
-python performance_test_mongodb.py
+   ```
