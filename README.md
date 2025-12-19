@@ -86,7 +86,7 @@ Place `sales_data.csv` in the root of the repository or adjust paths in the scri
  ```powershell
 cockroach sql --insecure --host=localhost:26257
    ```
-3. **CCreate database and table: Run SQL commands to create nordstrom database and sales_data table**
+3. **Create database and table: Run SQL commands to create nordstrom database and sales_data table**
  ```powershell
 CREATE DATABASE nordstrom;
 USE nordstrom;
@@ -115,40 +115,4 @@ CREATE TABLE sales_data (
 python performance_test_cockroachdb.py
 
    ```
-## Steps to Run
 
-### 1. Prepare Dataset
-Place `sales_data.csv` in the root of the repository or adjust paths in the scripts.
-
-## Performance Testing Steps
-
-### CockroachDB
-# Start the database
-cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-
-# Connect to SQL shell
-cockroach sql --insecure --host=localhost:26257
-
-# Create database and table
-CREATE DATABASE nordstrom;
-USE nordstrom;
-
-CREATE TABLE sales_data (
-    region STRING,
-    country STRING,
-    item_type STRING,
-    sales_channel STRING,
-    order_priority STRING,
-    order_date DATE,
-    order_id INT PRIMARY KEY,
-    ship_date DATE,
-    units_sold INT,
-    unit_price DECIMAL,
-    unit_cost DECIMAL,
-    total_revenue DECIMAL,
-    total_cost DECIMAL,
-    total_profit DECIMAL
-);
-
-# Run performance script
-python performance_test_cockroachdb.py
