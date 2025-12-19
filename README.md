@@ -75,10 +75,32 @@ This repository contains all code, scripts, and instructions for reproducing the
 ### 1. Prepare Dataset
 Place `sales_data.csv` in the root of the repository or adjust paths in the scripts.
 
-### 2. Performance Testing
-```bash
-# CockroachDB
-python "Performance - CockroachDB/performance.py"
+Performance Testing Steps
+CockroachDB
 
-# MongoDB
-python "Performance - MongoDB/performance.py"
+Start the database: Open PowerShell and start a single-node CockroachDB instance.
+
+cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
+
+
+Connect to SQL shell:
+
+cockroach sql --insecure --host=localhost:26257
+
+
+Create database and table: Run SQL commands to create nordstrom database and sales_data table.
+
+Run performance script:
+
+python performance_test_cockroachdb.py
+
+MongoDB
+
+Install Python driver:
+
+pip install pymongo
+
+
+Run performance script:
+
+python performance_test_mongodb.py
