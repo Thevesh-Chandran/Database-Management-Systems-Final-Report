@@ -1,4 +1,4 @@
-# Performance, Scalability, and Consistency Evaluation of CockroachDB and MongoDB
+# A Comparative Study of NoSQL and NewSQL Databases: Scalability, Consistency, and Performance Analysis
 
 This repository contains all code, scripts, and instructions for reproducing the experiments conducted in the research on evaluating **NewSQL (CockroachDB)** and **NoSQL (MongoDB)** databases. The experiments focus on **performance, scalability, and data consistency (ACID properties)** using a controlled dataset of 100,000 sales records.
 
