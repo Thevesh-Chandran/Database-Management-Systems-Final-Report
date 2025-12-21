@@ -114,12 +114,12 @@ CREATE TABLE sales_data (
  ```powershell
 python performance_test_cockroachdb.py
    ```
-###MongoDB
-1. ##Install Python MongoDB driver##
+### MongoDB
+1. ##Install Python MongoDB driver**
  ```powershell
 pip install pymongo
  ```
-2. ## Run performance script##
+2. **Run performance script**
 ```powershell
 python performance_test_mongodb.py
  ```
