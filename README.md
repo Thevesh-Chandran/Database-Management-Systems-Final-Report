@@ -190,3 +190,47 @@ sh.addShard("shard3/localhost:27023")
 ```powershell
 python scalability_test_mongodb.py
    ```
+
+## Data Consistency Testing (ACID)
+### Atomicity Test – CockroachDB
+
+1. **Create and connect to the database and table**
+```powershell
+CREATE DATABASE IF NOT EXISTS nordstrom;
+\c nordstrom;
+
+CREATE TABLE IF NOT EXISTS sales_data (
+    order_id INT PRIMARY KEY,
+    item_type STRING,
+    units_sold INT
+);
+```
+2. **Run atomicity test script**
+```powershell
+python atomicity_cockroachdb.py
+```
+
+3. **Verify rollback (record should NOT exist)**
+```powershell
+SELECT * FROM sales_data WHERE order_id = 999999;
+```
+
+## Consistency Test – CockroachDB
+
+1. **Run consistency test script**
+```powershell
+python consistency_cockroachdb.py
+```
+# Note:
+# The test triggers a duplicate key constraint violation
+# because order_id = 1 already exists and violates the primary key rule.
+
+
+python isolation_cockroachdb.py
+python durability_cockroachdb.py
+
+# MongoDB ACID tests
+python atomicity_mongodb.py
+python consistency_mongodb.py
+python isolation_mongodb.py
+python durability_mongodb.py
