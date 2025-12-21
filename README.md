@@ -139,12 +139,12 @@ python performance_test_mongodb.py
 cockroach start --insecure --store=node1 --listen-addr=localhost:26257
    ```
 
-3. **Start node 2**
+3. **Start node 2 (Do this on a new terminal and do not close any other terminal)**
  ```powershell
 cockroach start --insecure --store=node2 --listen-addr=localhost:26258 --http-addr=localhost:8082 --join=localhost:26257
    ```
 
-4. **Start node 3**
+4. **Start node 3 (Do this on a new terminal and do not close any other terminal)**
  ```powershell
 cockroach start --insecure --store=node3 --listen-addr=localhost:26259 --http-addr=localhost:8083 --join=localhost:26257
    ```
@@ -169,17 +169,17 @@ python scalability_test_cockroachdb.py
 & "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27021
  ```
 
-3. **Connect to shard 2**
+3. **Connect to shard 2 (Do this on a new terminal and do not close any other terminal)**
  ```powershell
 & "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27022
    ```
 
-4. **Connect to shard 3**
+4. **Connect to shard 3 (Do this on a new terminal and do not close any other terminal)**
  ```powershell
 & "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27023
    ```
 
-5. **Run the following commands inside mongosh to configure sharding**
+5. **Run the following commands inside mongosh to configure sharding (Do this on a new terminal and do not close any other terminal)**
 ```powershell
 sh.addShard("shard1/localhost:27021")
 sh.addShard("shard2/localhost:27022")
