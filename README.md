@@ -158,3 +158,35 @@ cockroach init --insecure --host=localhost:26257
 ```powershell
 python scalability_test_cockroachdb.py
    ```
+
+### MongoDB (Sharded Cluster Setup)
+1. **Connect to config server / mongos**
+ ```powershell
+& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27020
+ ```
+2. **Connect to shard 1**
+```powershell
+& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27021
+ ```
+
+3. **Connect to shard 2**
+ ```powershell
+& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27022
+   ```
+
+4. **Connect to shard 3**
+ ```powershell
+& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27023
+   ```
+
+5. **Run the following commands inside mongosh to configure sharding**
+```powershell
+sh.addShard("shard1/localhost:27021")
+sh.addShard("shard2/localhost:27022")
+sh.addShard("shard3/localhost:27023")
+   ```
+
+6. **Run scalability test script**
+```powershell
+python scalability_test_mongodb.py
+   ```
