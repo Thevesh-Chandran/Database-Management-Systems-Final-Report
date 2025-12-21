@@ -114,6 +114,8 @@ CREATE TABLE sales_data (
  ```powershell
 python performance_test_cockroachdb.py
    ```
+---
+
 ## MongoDB
 1. **Install Python MongoDB driver**
  ```powershell
@@ -123,6 +125,7 @@ pip install pymongo
 ```powershell
 python performance_test_mongodb.py
  ```
+---
 
 # Scalability Testing Steps
 
@@ -158,6 +161,7 @@ cockroach init --insecure --host=localhost:26257
 ```powershell
 python scalability_test_cockroachdb.py
    ```
+---
 
 ## MongoDB (Sharded Cluster Setup)
 1. **Connect to config server / mongos**
@@ -190,6 +194,7 @@ sh.addShard("shard3/localhost:27023")
 ```powershell
 python scalability_test_mongodb.py
    ```
+---
 
 # Data Consistency Testing (ACID)
 ## Atomicity Test – CockroachDB
@@ -214,6 +219,7 @@ python atomicity_cockroachdb.py
 ```powershell
 SELECT * FROM sales_data WHERE order_id = 999999;
 ```
+---
 
 ## Consistency Test – CockroachDB
 
@@ -224,6 +230,8 @@ python consistency_cockroachdb.py
 ### Note:
 ### The test triggers a duplicate key constraint violation
 ### because order_id = 1 already exists and violates the primary key rule.
+
+---
 
 ## Isolation Test – CockroachDB
 
@@ -241,6 +249,8 @@ SELECT * FROM sales_data WHERE order_id = 1;
 ```
 ### units_sold should be 15
 
+---
+
 ## Durability Test – CockroachDB
 
 1. **Run durability test script**
@@ -249,7 +259,7 @@ python durability_cockroachdb.py
 ```
 
 2. **Restart the node**
-# Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
+### Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
 
 3. **Verify the record persists**
 ```powershell
@@ -257,6 +267,7 @@ SELECT * FROM sales_data WHERE order_id = 888888;
 ```
 ### units_sold should be 50
 
+---
 
 
 # MongoDB ACID tests
