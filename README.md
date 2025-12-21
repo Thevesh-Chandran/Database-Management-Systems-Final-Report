@@ -221,9 +221,9 @@ SELECT * FROM sales_data WHERE order_id = 999999;
 ```powershell
 python consistency_cockroachdb.py
 ```
-##Note:
-##The test triggers a duplicate key constraint violation
-##because order_id = 1 already exists and violates the primary key rule.
+## Note:
+## The test triggers a duplicate key constraint violation
+## because order_id = 1 already exists and violates the primary key rule.
 
 
 python isolation_cockroachdb.py
