@@ -75,9 +75,9 @@ This repository contains all code, scripts, and instructions for reproducing the
 ### 1. Prepare Dataset
 Place `sales_data.csv` in the root of the repository or adjust paths in the scripts.
 
-## Performance Testing Steps
+# Performance Testing Steps
 
-### CockroachDB
+## CockroachDB
 1. **Start the database:** Open PowerShell and start a single-node CockroachDB instance.  
    ```powershell
    cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
@@ -114,7 +114,7 @@ CREATE TABLE sales_data (
  ```powershell
 python performance_test_cockroachdb.py
    ```
-### MongoDB
+## MongoDB
 1. **Install Python MongoDB driver**
  ```powershell
 pip install pymongo
@@ -124,9 +124,9 @@ pip install pymongo
 python performance_test_mongodb.py
  ```
 
-## Scalability Testing Steps
+# Scalability Testing Steps
 
-### CockroachDB
+## CockroachDB
 1. **Create directories for each node**
    ```powershell
    mkdir node1
@@ -159,7 +159,7 @@ cockroach init --insecure --host=localhost:26257
 python scalability_test_cockroachdb.py
    ```
 
-### MongoDB (Sharded Cluster Setup)
+## MongoDB (Sharded Cluster Setup)
 1. **Connect to config server / mongos**
  ```powershell
 & "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27020
@@ -191,8 +191,8 @@ sh.addShard("shard3/localhost:27023")
 python scalability_test_mongodb.py
    ```
 
-## Data Consistency Testing (ACID)
-### Atomicity Test – CockroachDB
+# Data Consistency Testing (ACID)
+## Atomicity Test – CockroachDB
 
 1. **Create and connect to the database and table**
 ```powershell
@@ -215,7 +215,7 @@ python atomicity_cockroachdb.py
 SELECT * FROM sales_data WHERE order_id = 999999;
 ```
 
-### Consistency Test – CockroachDB
+## Consistency Test – CockroachDB
 
 1. **Run consistency test script**
 ```powershell
@@ -225,7 +225,7 @@ python consistency_cockroachdb.py
 ### The test triggers a duplicate key constraint violation
 ### because order_id = 1 already exists and violates the primary key rule.
 
-### Isolation Test – CockroachDB
+## Isolation Test – CockroachDB
 
 1. **Run isolation test script**
 ```powershell
@@ -241,7 +241,7 @@ SELECT * FROM sales_data WHERE order_id = 1;
 ```
 ### units_sold should be 15
 
-### Durability Test – CockroachDB
+## Durability Test – CockroachDB
 
 1. **Run durability test script**
 ```powershell
