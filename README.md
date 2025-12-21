@@ -115,7 +115,7 @@ CREATE TABLE sales_data (
 python performance_test_cockroachdb.py
    ```
 ### MongoDB
-1. ##Install Python MongoDB driver**
+1. **Install Python MongoDB driver**
  ```powershell
 pip install pymongo
  ```
@@ -123,3 +123,38 @@ pip install pymongo
 ```powershell
 python performance_test_mongodb.py
  ```
+
+## Scalability Testing Steps
+
+### CockroachDB
+1. **Create directories for each node**
+   ```powershell
+   mkdir node1
+   mkdir node2
+   mkdir node3
+    ```
+   
+2. **Start node 1**
+ ```powershell
+cockroach start --insecure --store=node1 --listen-addr=localhost:26257
+   ```
+
+3. **Start node 2**
+ ```powershell
+cockroach start --insecure --store=node2 --listen-addr=localhost:26258 --http-addr=localhost:8082 --join=localhost:26257
+   ```
+
+4. **Start node 3**
+ ```powershell
+cockroach start --insecure --store=node3 --listen-addr=localhost:26259 --http-addr=localhost:8083 --join=localhost:26257
+   ```
+
+5. **Initialize the cluster**
+```powershell
+cockroach init --insecure --host=localhost:26257
+   ```
+
+6. **Run scalability test script**
+```powershell
+python scalability_test_cockroachdb.py
+   ```
