@@ -197,9 +197,14 @@ python scalability_test_mongodb.py
 ---
 
 # Data Consistency Testing (ACID)
+## CockroachDB
 ## Atomicity Test – CockroachDB
 
-1. **Create and connect to the database and table**
+1. **start the single-node CockroachDB instance**
+```powershell
+cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
+```
+2. **Create and connect to the database and table**
 ```powershell
 CREATE DATABASE IF NOT EXISTS nordstrom;
 \c nordstrom;
@@ -210,12 +215,12 @@ CREATE TABLE IF NOT EXISTS sales_data (
     units_sold INT
 );
 ```
-2. **Run atomicity test script**
+3. **Run atomicity test script**
 ```powershell
-python atomicity_cockroachdb.py
+python atomicity_test.py
 ```
 
-3. **Verify rollback (record should NOT exist)**
+4. **Verify rollback (record should NOT exist)**
 ```powershell
 SELECT * FROM sales_data WHERE order_id = 999999;
 ```
@@ -223,9 +228,14 @@ SELECT * FROM sales_data WHERE order_id = 999999;
 
 ## Consistency Test – CockroachDB
 
-1. **Run consistency test script**
+
+1. **start the single-node CockroachDB instance**
 ```powershell
-python consistency_cockroachdb.py
+cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
+```
+2. **Run consistency test script**
+```powershell
+python consistency_test.py
 ```
 ### Note:
 ### The test triggers a duplicate key constraint violation
@@ -235,15 +245,19 @@ python consistency_cockroachdb.py
 
 ## Isolation Test – CockroachDB
 
-1. **Run isolation test script**
+1. **start the single-node CockroachDB instance**
 ```powershell
-python isolation_cockroachdb.py
+cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
+```
+2. **Run isolation test script**
+```powershell
+python isolation_test.py
 ```
 
-3. **When prompted, press ENTER to resume Transaction 1**
+4. **When prompted, press ENTER to resume Transaction 1**
 ### (Transaction 1 is intentionally paused to test isolation)
 
-3. ** Verify final value**
+5. ** Verify final value**
 ```powershell
 SELECT * FROM sales_data WHERE order_id = 1;
 ```
@@ -253,15 +267,19 @@ SELECT * FROM sales_data WHERE order_id = 1;
 
 ## Durability Test – CockroachDB
 
-1. **Run durability test script**
+1. **start the single-node CockroachDB instance**
 ```powershell
-python durability_cockroachdb.py
+cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
+```
+2. **Run durability test script**
+```powershell
+python durability_test.py
 ```
 
-2. **Restart the node**
+3. **Restart the node**
 ### Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
 
-3. **Verify the record persists**
+4. **Verify the record persists**
 ```powershell
 SELECT * FROM sales_data WHERE order_id = 888888;
 ```
@@ -269,9 +287,106 @@ SELECT * FROM sales_data WHERE order_id = 888888;
 
 ---
 
+## MongoDB
+## Atomicity Test – MongoDB
 
-# MongoDB ACID tests
-python atomicity_mongodb.py
-python consistency_mongodb.py
-python isolation_mongodb.py
-python durability_mongodb.py
+1. **Step 1: Start MongoDB as a replica set (required for transactions)**
+```powershell
+mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
+```
+2. **Open a NEW terminal and connect to MongoDB shell**
+```powershell
+mongosh --port 27017
+```
+
+3. **Initialize the replica set (run inside mongosh)**
+```powershell
+rs.initiate()
+```
+4. **Run atomicity test script**
+```powershell
+python atomicity_test_mongodb.py
+```
+### The script will automatically state the number of documents with order_id 999999, which should be 0 ( not exists)
+
+## Consistency Test – MongoDB
+
+1. **Step 1: Start MongoDB as a replica set (required for transactions)**
+```powershell
+mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
+```
+2. **Open a NEW terminal and connect to MongoDB shell**
+```powershell
+mongosh --port 27017
+```
+
+3. **Initialize the replica set (run inside mongosh)**
+```powershell
+rs.initiate()
+```
+4. **Run consistency test script**
+```powershell
+python consistency_test_mongosb.py
+```
+### Note: The script will automatically give an duplicate key constraint violation error and state the no of doucments with order id of 1 , which should be 0
+
+---
+
+## Isolation Test – MongoDB
+
+1. **Step 1: Start MongoDB as a replica set (required for transactions)**
+```powershell
+mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
+```
+2. **Open a NEW terminal and connect to MongoDB shell**
+```powershell
+mongosh --port 27017
+```
+
+3. **Initialize the replica set (run inside mongosh)**
+```powershell
+rs.initiate()
+```
+4. **Run isolation test script**
+```powershell
+python isolation_test_mongodb.py
+```
+
+5. **When prompted, press ENTER to resume Transaction 1**
+### (Transaction 1 is intentionally paused to test isolation)
+
+### Note: The script will automatically state the units_sold for order id of 1, which should be 15
+
+---
+
+## Durability Test – CockroachDB
+
+1. **Step 1: Start MongoDB as a replica set (required for transactions)**
+```powershell
+mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
+```
+2. **Open a NEW terminal and connect to MongoDB shell**
+```powershell
+mongosh --port 27017
+```
+
+3. **Initialize the replica set (run inside mongosh)**
+```powershell
+rs.initiate()
+```
+4. **Run durability test script**
+```powershell
+python durability_test.py
+```
+
+5. **Restart the node**
+### Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
+
+6. **Verify the record persists**
+```powershell
+use mydb
+db.sales.find({ order_id: 888888 }).pretty()
+```
+### units_sold should be 50
+
+---
