@@ -215,7 +215,7 @@ python atomicity_cockroachdb.py
 SELECT * FROM sales_data WHERE order_id = 999999;
 ```
 
-## Consistency Test – CockroachDB
+### Consistency Test – CockroachDB
 
 1. **Run consistency test script**
 ```powershell
@@ -225,9 +225,39 @@ python consistency_cockroachdb.py
 ### The test triggers a duplicate key constraint violation
 ### because order_id = 1 already exists and violates the primary key rule.
 
+### Isolation Test – CockroachDB
 
+1. **Run isolation test script**
+```powershell
 python isolation_cockroachdb.py
+```
+
+3. **When prompted, press ENTER to resume Transaction 1**
+### (Transaction 1 is intentionally paused to test isolation)
+
+3. ** Verify final value**
+```powershell
+SELECT * FROM sales_data WHERE order_id = 1;
+```
+### units_sold should be 15
+
+### Durability Test – CockroachDB
+
+1. **Run durability test script**
+```powershell
 python durability_cockroachdb.py
+```
+
+2. **Restart the node**
+# Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
+
+3. **Verify the record persists**
+```powershell
+SELECT * FROM sales_data WHERE order_id = 888888;
+```
+### units_sold should be 50
+
+
 
 # MongoDB ACID tests
 python atomicity_mongodb.py
