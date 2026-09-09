@@ -1,392 +1,48 @@
-# A Comparative Study of NoSQL and NewSQL Databases: Scalability, Consistency, and Performance Analysis
-
-> MAKE SURE TO READ THE ENTIRE REPOSITORY. THE STEPS GUIDE IS AT THE BOTTOM.
-
-This repository contains all code, scripts, and instructions for reproducing the experiments conducted in the research on evaluating **NewSQL (CockroachDB)** and **NoSQL (MongoDB)** databases. The experiments focus on **performance, scalability, and data consistency (ACID properties)** using a controlled dataset of 100,000 sales records.
-
----
-
-## Repository Structure
-
-- **Dataset:** `sales_data.csv`  
-- **Folders:**
-  1. **Performance - CockroachDB**: Python scripts for performance testing on CockroachDB  
-  2. **Performance - MongoDB**: Python scripts for performance testing on MongoDB  
-  3. **Scalability - CockroachDB**: Python scripts for scalability testing on CockroachDB  
-  4. **Scalability - MongoDB**: Python scripts for scalability testing on MongoDB  
-  5. **Data Consistency - CockroachDB**: Python scripts for atomicity, durability, isolation, and consistency testing on CockroachDB  
-  6. **Data Consistency - MongoDB**: Python scripts for atomicity, durability, isolation, and consistency testing on MongoDB  
-
----
-
-## Methodology Overview
-
-### Research Design
-- **Type:** Quantitative experimental comparative study  
-- **Objective:** Evaluate and compare **performance, scalability, and consistency** of CockroachDB (NewSQL) and MongoDB (NoSQL)  
-- **Metrics:**  
-  - **Performance:** Latency, write/read throughput, aggregation latency  
-  - **Scalability:** Throughput with 1-node, 2-node, 3-node clusters/shards  
-  - **Consistency:** ACID properties (Atomicity, Consistency, Isolation, Durability)  
-
-### Data Collection
-- Dataset: 100,000-row structured sales data CSV from Kaggle  
-- Inserted in **batches of 5,000 rows**  
-- Python scripts automate insertion, read, and aggregation operations  
-
-### Experimental Setup
-- **Hardware:** ASUS Vivobook 15X OLED, AMD Ryzen 7-7730U, 16GB RAM, 512GB SSD  
-- **Software:** Windows 11, Python, CockroachDB, MongoDB, Microsoft Office  
-- **Environment:** Single-node and multi-node CockroachDB clusters, sharded MongoDB clusters  
-
----
-
-## Implementation Details
-
-### 1. Performance Testing
-- **CockroachDB:** Single-node batch insertions using Python `execute_values`  
-- **MongoDB:** Batch inserts as documents using Python PyMongo  
-- Metrics: write latency, write throughput, read latency, read throughput, aggregation latency  
-
-### 2. Scalability Testing
-- **CockroachDB:** Tested with 1, 2, and 3-node clusters  
-- **MongoDB:** Tested with 1, 2, and 3-shard clusters  
-- Metrics: write/read throughput, scaling factors  
-
-### 3. Data Consistency Testing
-- **Atomicity:** Transaction rollback on primary key violation  
-- **Consistency:** Database constraints enforced during insertions  
-- **Isolation:** Two concurrent transactions on the same record  
-- **Durability:** Record survives node restart  
-
----
-
-## Tools and Technologies
-- **Python**: Automation, performance measurement, and ACID testing  
-- **CockroachDB**: NewSQL database  
-- **MongoDB**: NoSQL database  
-- **PowerShell**: CockroachDB node startup and MongoDB shard configuration  
-- **Kaggle CSV Dataset**: Sales data for experiments  
-
----
-
-## Steps to Run
-
-### 1. Prepare Dataset
-Place `sales_data.csv` in the root of the repository or adjust paths in the scripts.
-
-# Performance Testing Steps
-
-## CockroachDB
-1. **Start the database:** Open PowerShell and start a single-node CockroachDB instance.  
-   ```powershell
-   cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-   
-2. **Connect to SQL shell:**
- ```powershell
-cockroach sql --insecure --host=localhost:26257
-   ```
-3. **Create database and table: Run SQL commands to create nordstrom database and sales_data table**
- ```powershell
-CREATE DATABASE nordstrom;
-USE nordstrom;
-
-CREATE TABLE sales_data (
-    region STRING,
-    country STRING,
-    item_type STRING,
-    sales_channel STRING,
-    order_priority STRING,
-    order_date DATE,
-    order_id INT PRIMARY KEY,
-    ship_date DATE,
-    units_sold INT,
-    unit_price DECIMAL,
-    unit_cost DECIMAL,
-    total_revenue DECIMAL,
-    total_cost DECIMAL,
-    total_profit DECIMAL
-);
-
-   ```
-
-4. **Run performance script**
- ```powershell
-python performance_test_cockroachdb.py
-   ```
----
-
-## MongoDB
-1. **Install Python MongoDB driver**
- ```powershell
-pip install pymongo
- ```
-2. **Run performance script**
-```powershell
-python performance_test_mongodb.py
- ```
----
-
-# Scalability Testing Steps
-
-## CockroachDB
-1. **Create directories for each node**
-   ```powershell
-   mkdir node1
-   mkdir node2
-   mkdir node3
-    ```
-   
-2. **Start node 1**
- ```powershell
-cockroach start --insecure --store=node1 --listen-addr=localhost:26257
-   ```
-
-3. **Start node 2 (Do this on a new terminal and do not close any other terminal)**
- ```powershell
-cockroach start --insecure --store=node2 --listen-addr=localhost:26258 --http-addr=localhost:8082 --join=localhost:26257
-   ```
-
-4. **Start node 3 (Do this on a new terminal and do not close any other terminal)**
- ```powershell
-cockroach start --insecure --store=node3 --listen-addr=localhost:26259 --http-addr=localhost:8083 --join=localhost:26257
-   ```
-
-5. **Initialize the cluster**
-```powershell
-cockroach init --insecure --host=localhost:26257
-   ```
-
-6. **Run scalability test script**
-```powershell
-python scalability_test_cockroachdb.py
-   ```
----
-
-## MongoDB (Sharded Cluster Setup)
-1. **Connect to config server / mongos**
- ```powershell
-& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27020
- ```
-2. **Connect to shard 1**
-```powershell
-& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27021
- ```
-
-3. **Connect to shard 2 (Do this on a new terminal and do not close any other terminal)**
- ```powershell
-& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27022
-   ```
-
-4. **Connect to shard 3 (Do this on a new terminal and do not close any other terminal)**
- ```powershell
-& "C:\Program Files\MongoDB\Server\8.2\bin\mongosh.exe" --port 27023
-   ```
-
-5. **Run the following commands inside mongosh to configure sharding (Do this on a new terminal and do not close any other terminal)**
-```powershell
-sh.addShard("shard1/localhost:27021")
-sh.addShard("shard2/localhost:27022")
-sh.addShard("shard3/localhost:27023")
-   ```
-
-6. **Run scalability test script**
-```powershell
-python scalability_test_mongodb.py
-   ```
----
-
-# Data Consistency Testing (ACID)
-## CockroachDB
-## Atomicity Test – CockroachDB
-
-1. **start the single-node CockroachDB instance**
-```powershell
-cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-```
-2. **Create and connect to the database and table**
-```powershell
-CREATE DATABASE IF NOT EXISTS nordstrom;
-\c nordstrom;
-
-CREATE TABLE IF NOT EXISTS sales_data (
-    order_id INT PRIMARY KEY,
-    item_type STRING,
-    units_sold INT
-);
-```
-3. **Run atomicity test script**
-```powershell
-python atomicity_test.py
-```
-
-4. **Verify rollback (record should NOT exist)**
-```powershell
-SELECT * FROM sales_data WHERE order_id = 999999;
-```
----
-
-## Consistency Test – CockroachDB
-
-
-1. **start the single-node CockroachDB instance**
-```powershell
-cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-```
-2. **Run consistency test script**
-```powershell
-python consistency_test.py
-```
-### Note:
-### The test triggers a duplicate key constraint violation
-### because order_id = 1 already exists and violates the primary key rule.
-
----
-
-## Isolation Test – CockroachDB
-
-1. **start the single-node CockroachDB instance**
-```powershell
-cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-```
-2. **Run isolation test script**
-```powershell
-python isolation_test.py
-```
-
-4. **When prompted, press ENTER to resume Transaction 1**
-### (Transaction 1 is intentionally paused to test isolation)
-
-5. ** Verify final value**
-```powershell
-SELECT * FROM sales_data WHERE order_id = 1;
-```
-### units_sold should be 15
-
----
-
-## Durability Test – CockroachDB
-
-1. **start the single-node CockroachDB instance**
-```powershell
-cockroach start-single-node --insecure --listen-addr=localhost:26257 --http-addr=8081
-```
-2. **Run durability test script**
-```powershell
-python durability_test.py
-```
-
-3. **Restart the node**
-### Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
-
-4. **Verify the record persists**
-```powershell
-SELECT * FROM sales_data WHERE order_id = 888888;
-```
-### units_sold should be 50
-
----
-
-## MongoDB
-## Atomicity Test – MongoDB
-
-1. **Step 1: Start MongoDB as a replica set (required for transactions)**
-```powershell
-mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
-```
-2. **Open a NEW terminal and connect to MongoDB shell**
-```powershell
-mongosh --port 27017
-```
-
-3. **Initialize the replica set (run inside mongosh)**
-```powershell
-rs.initiate()
-```
-4. **Run atomicity test script**
-```powershell
-python atomicity_test_mongodb.py
-```
-### The script will automatically state the number of documents with order_id 999999, which should be 0 ( not exists)
-
-## Consistency Test – MongoDB
-
-1. **Step 1: Start MongoDB as a replica set (required for transactions)**
-```powershell
-mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
-```
-2. **Open a NEW terminal and connect to MongoDB shell**
-```powershell
-mongosh --port 27017
-```
-
-3. **Initialize the replica set (run inside mongosh)**
-```powershell
-rs.initiate()
-```
-4. **Run consistency test script**
-```powershell
-python consistency_test_mongosb.py
-```
-### Note: The script will automatically give an duplicate key constraint violation error and state the no of doucments with order id of 1 , which should be 0
-
----
-
-## Isolation Test – MongoDB
-
-1. **Step 1: Start MongoDB as a replica set (required for transactions)**
-```powershell
-mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
-```
-2. **Open a NEW terminal and connect to MongoDB shell**
-```powershell
-mongosh --port 27017
-```
-
-3. **Initialize the replica set (run inside mongosh)**
-```powershell
-rs.initiate()
-```
-4. **Run isolation test script**
-```powershell
-python isolation_test_mongodb.py
-```
-
-5. **When prompted, press ENTER to resume Transaction 1**
-### (Transaction 1 is intentionally paused to test isolation)
-
-### Note: The script will automatically state the units_sold for order id of 1, which should be 15
-
----
-
-## Durability Test – CockroachDB
-
-1. **Step 1: Start MongoDB as a replica set (required for transactions)**
-```powershell
-mongod --dbpath C:\Users\theve\OneDrive\Desktop\cockroach\nongodata --replSet rs0 --port 27017
-```
-2. **Open a NEW terminal and connect to MongoDB shell**
-```powershell
-mongosh --port 27017
-```
-
-3. **Initialize the replica set (run inside mongosh)**
-```powershell
-rs.initiate()
-```
-4. **Run durability test script**
-```powershell
-python durability_test.py
-```
-
-5. **Restart the node**
-### Close the terminal, then start the single-node CockroachDB instance again (repeat step 1)
-
-6. **Verify the record persists**
-```powershell
-use mydb
-db.sales.find({ order_id: 888888 }).pretty()
-```
-### units_sold should be 50
-
----
+<p align="center"><img src="assets/hero.svg" alt="MongoDB vs CockroachDB" width="960"></p>
+
+<h1 align="center">MongoDB vs CockroachDB</h1>
+
+<p align="center">Comparing database performance, scalability and consistency.</p>
+
+<p align="center"><a href="#overview">Overview</a> · <a href="#explore">Explore</a> · <a href="#getting-started">Getting started</a></p>
+
+<p align="center"><img src="https://img.shields.io/badge/PYTHON-8ebbdc" alt="PYTHON">
+<img src="https://img.shields.io/badge/NOSQL%20%2B%20NEWSQL-8ebbdc" alt="NOSQL + NEWSQL">
+<img src="https://img.shields.io/badge/100K%20RECORDS-8ebbdc" alt="100K RECORDS"></p>
+
+## Overview
+
+A comparative database coursework study using a 100,000-record sales dataset to explore MongoDB (NoSQL) and CockroachDB (NewSQL). Python scripts exercise reads, writes, aggregations and transaction behaviour across the two systems.
+
+## Explore
+
+| Experiment | CockroachDB | MongoDB |
+|---|---|---|
+| Performance | [Scripts](Performance%20-%20CockroachDB/) | [Scripts](Performance%20-%20MongoDB/) |
+| Scalability | [Scripts](Scalability%20-%20CockroachDB/) | [Scripts](Scalability%20-%20MongoDB/) |
+| Data consistency | [Scripts](Data%20Consistency%20-%20CockroachDB/) | [Scripts](Data%20Consistency%20-%20MongoDB/) |
+
+- **Performance:** read/write latency, throughput and aggregation latency.
+- **Scalability:** comparisons across one, two and three nodes or shards.
+- **Consistency:** targeted atomicity, consistency, isolation and durability scenarios.
+
+## Methodology
+
+The coursework uses batches of 5,000 sales records and a local Windows 11 environment with a Ryzen 7 7730U processor and 16 GB RAM. The repository contains the [sales dataset](sales_data.csv) and experiment scripts.
+
+These are configuration-specific experiments. Individual transaction scenarios demonstrate the tested behaviour and do not constitute a comprehensive guarantee about either database.
+
+## Tech stack
+
+Python · CockroachDB · MongoDB · PyMongo · PowerShell
+
+## Getting started
+
+Read the [experiment setup guide](docs/EXPERIMENT_GUIDE.md) for database preparation, schemas, cluster setup and individual test commands.
+
+1. Install the database and Python dependencies required by the chosen script.
+2. Create a dedicated local test database and prepare the appropriate schema.
+3. Adjust connection settings and the path to `sales_data.csv` in the script.
+4. Run the script from its experiment folder and record the output.
+
+The original setup uses local development database configurations. Database services must be configured before the Python experiments can run.
